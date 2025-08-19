@@ -5,18 +5,29 @@ jobs:
     docker:
       - image: circleci/node:16
     working_directory: ~/repo
-
     steps:
       - checkout
-
       - run:
           name: Install dependencies
           command: npm install
-
       - run:
           name: Run tests
           command: npm test || echo "No tests found, skipping"
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - node_modules
+            - index.js
+            - package.json
 
+  post_approval_check:
+    docker:
+      - image: circleci/node:16
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
       - run:
           name: Run the app and check output
           command: |
@@ -32,4 +43,8 @@ workflows:
       - build
       - hold_for_approval:
           type: approval
-      
+          requires:
+            - build
+      - post_approval_check:
+          requires:
+            - hold_for_approval
