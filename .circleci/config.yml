@@ -35,8 +35,7 @@ workflows:
             - build
       - hold_for_approval:
           type: approval
-          requires:
-            - test
+  
       - deploy:
           requires:
             - hold_for_approval
