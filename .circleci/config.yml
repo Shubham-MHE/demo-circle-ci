@@ -32,6 +32,4 @@ workflows:
       - build
       - hold_for_approval:
           type: approval
-      - deploy:
-          requires:
-            - hold_for_approval
+      
